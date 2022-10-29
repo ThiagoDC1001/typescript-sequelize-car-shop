@@ -43,7 +43,8 @@ class CarService implements IService<ICar> {
 
   public async delete(_id:string): Promise<ICar | null> {
     const deleted = await this._car.delete(_id);
-    if (!deleted) throw new Error(ErrorTypes.NotFound);
+    if (_id.length !== 24) { throw new Error(ErrorTypes.InvalidMongoId); }
+    if (!deleted) throw new Error(ErrorTypes.EntityNotFound);
     return deleted;
   }
 }
