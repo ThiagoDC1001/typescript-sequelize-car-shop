@@ -30,13 +30,15 @@ class CarService implements IService<ICar> {
     return car;
   }
 
-  public async update(_id: string, obj: ICar): Promise<ICar | null> {
-    const parsed = carSchema.safeParse(obj);
+  public async update(_id: string, obj: ICar): Promise<ICar> {
+    const parsed = carSchema.partial().safeParse(obj);
     if (!parsed.success) {
       throw parsed.error;
     }
-    await this.readOne(_id);
-    return this._car.update(_id, obj);
+    const carUpadated = await this._car.update(_id, parsed.data);
+    if (Object.keys(obj).length === 0) { throw new Error(ErrorTypes.BadRequest); }
+    if (!carUpadated) { throw new Error(ErrorTypes.EntityNotFound); }
+    return carUpadated;
   }
 
   public async delete(_id:string): Promise<ICar | null> {

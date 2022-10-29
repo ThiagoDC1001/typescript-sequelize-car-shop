@@ -21,4 +21,8 @@ export default class CarController {
     const data = await this._service.readOne(id);
     res.status(200).json(data);
   }
+  public async update(req: Request, res: Response): Promise<void> {
+    const updated = await this._service.update(req.params.id, req.body);
+    res.status(200).json(updated);
+  }
 }
